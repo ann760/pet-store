@@ -1,5 +1,6 @@
 package pet.store.service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Objects;
 import java.util.Optional;
@@ -33,6 +34,10 @@ public class PetStoreService {
 			PetStoreData petStoreData) {
 		petStore.setPetStoreAddress(petStoreData.getPetStoreAddress());
 		petStore.setPetStoreName(petStoreData.getPetStoreName());
+		petStore.setPetStoreCity(petStoreData.getPetStoreCity());
+		petStore.setPetStoreState(petStoreData.getPetStoreState());
+		petStore.setPetStoreZip(petStoreData.getPetStoreZip());
+		petStore.setPetStorePhone(petStoreData.getPetStorePhone());
 	}
 	
 	private PetStore findOrCreatePetStore(Long petStoreId, String petStoreAddress) {
@@ -58,5 +63,27 @@ public class PetStoreService {
 		return petStoreDao.findById(petStoreId)
 				.orElseThrow(() -> new NoSuchElementException(
 						"Pet Srtore with ID=" + petStoreId + "was not found"));
+	}
+
+	@Transactional(readOnly = true)
+	public List<PetStoreData> retriveAllPetStores() {
+		// @formatter:off
+		return petStoreDao.findAll()
+			.stream()
+			.map(cont -> new PetStoreData(cont))
+			.toList();
+		// @formatter:on
+	}
+
+	@Transactional(readOnly = true)
+	public PetStoreData retrievePetStoreById(Long petStoreId) {
+			PetStore petStore = findPetStoreById(petStoreId);
+				return new PetStoreData(petStore);
+	}
+
+	@Transactional(readOnly = false)
+	public void deletePetStoreById(Long petStoreId) {
+		PetStore petStore = findPetStoreById(petStoreId);
+		petStoreDao.delete(petStore);
 	}
 }
