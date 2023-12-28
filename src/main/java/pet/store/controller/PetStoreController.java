@@ -17,6 +17,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import lombok.extern.slf4j.Slf4j;
 import pet.store.controller.model.PetStoreData;
+import pet.store.controller.model.PetStoreData.PetStoreCustomer;
+import pet.store.controller.model.PetStoreData.PetStoreEmployee;
 import pet.store.service.PetStoreService;
 
 @RestController
@@ -70,5 +72,21 @@ public class PetStoreController {
 		
 		return Map.of("message", "Deleting of Pet Store with ID=" + petStoreId 
 				+ " was successful");
+	}
+	
+	@PostMapping("/{petStoreId}/employee")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public PetStoreEmployee insertEmployee(@PathVariable Long petStoreId,
+			@RequestBody PetStoreEmployee employeeData) {
+		log.info("Creating pet store employee {}", employeeData);
+		return petStoreService.saveEmployee(petStoreId, employeeData);
+	}
+	
+	@PostMapping("/{petStoreId}/customer")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public PetStoreCustomer insertCustomer(@PathVariable Long petStoreId, 
+			@RequestBody PetStoreCustomer customerData) {
+		log.info("Creating pet store customer {}", customerData);
+		return petStoreService.saveCustomer(petStoreId, customerData);
 	}
 }
